@@ -1,10 +1,10 @@
-solution "template"
+solution "tlmd"
 language "C++"
 configurations { "Debug", "Release" }
 includedirs { "include", "src/include" }
 files { "include/**.h" }
 
-defines { "TMPL_BUILD" }
+defines { "TLMD_BUILD" }
 
 configuration "Debug"
 defines { "DEBUG" }
@@ -19,19 +19,27 @@ flags { "OptimizeSpeed",
 	"NoFramePointer" }
 targetdir "build/release"
 
-project "template"
+project "tlmd"
 kind "StaticLib"
 files { "src/**.c", "src/**.cpp" }
+excludes { "src/tlmd_server.c" }
 
-project "template-dynamic"
+project "tlmd-dynamic"
 kind "SharedLib"
 files { "src/**.c", "src/**.cpp" }
-targetname "template"
+excludes { "src/tlmd_server.c" }
+targetname "tlmd"
+
+project "tlmd-server"
+kind "ConsoleApp"
+files { "src/tlmd_server.c" }
+links { "tlmd" }
+targetname "tlmd"
 
 project "tests"
 kind "ConsoleApp"
 files { "tests/**.cpp" }
-links { "template" }
+links { "tlmd" }
 configuration "Debug"
 postbuildcommands("build/debug/tests")
 configuration "Release"

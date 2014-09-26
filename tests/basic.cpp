@@ -1,5 +1,5 @@
-#include "tmpl-tests.h"
-#include "template.h"
+#include "tlmd-tests.h"
+#include "tlmd.h"
 
 TEST(InitTerminate, Basic, 0.0f,
      // initialisation
@@ -8,17 +8,34 @@ TEST(InitTerminate, Basic, 0.0f,
      },
      // cleanup
      {
-	 tmplTerminateContext(&m_data.context);
+	 tlmdTerminateContext(&m_data.context);
      },
      // test
      {
-	 ASSERT(tmplInitContext(&m_data.context) == TMPL_SUCCESS);
-      ASSERT(m_data.context != 0);
-	 ASSERT(tmplTerminateContext(&m_data.context) == TMPL_SUCCESS);
-      ASSERT(m_data.context == 0)
+	 ASSERT(tlmdInitContext(&m_data.context) == TLMD_SUCCESS);
+	 ASSERT(m_data.context != 0);
+	 ASSERT(tlmdTerminateContext(&m_data.context) == TLMD_SUCCESS);
+	 ASSERT(m_data.context == 0)
      },
      // data
      {
-	 tmplContext* context;
+	 tlmdContext* context;
+     }
+    );
+
+TEST(Authenticate, Basic, 0.0f,
+     {
+	 m_data.context = 0;
+	 tlmdInitContext(&m_data.context);
+     },
+     {
+	 tlmdTerminateContext(&m_data.context);
+     },
+     {
+       ASSERT(tlmdAuthenticate(0, TLMD_CONNECTION_LOCAL, 0) != TLMD_SUCCESS);
+       ASSERT(tlmdAuthenticate(m_data.context, TLMD_CONNECTION_LOCAL, 0) == TLMD_SUCCESS);
+     },
+     {
+	 tlmdContext* context;
      }
     );

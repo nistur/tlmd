@@ -1,8 +1,14 @@
-#include "template.h"
+#include "tlmd.h"
 
-tmplReturn g_tmplError;
-const char* g_tmplErrors[] = 
+tlmdReturn g_tlmdError;
+const char* g_tlmdErrors[] = 
 {
     "Success",
     "Null context",
 };
+
+
+const char* tlmdError()
+{
+    return g_tlmdErrors[g_tlmdError];
+}
