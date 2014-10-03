@@ -10,12 +10,16 @@
  ***************************************/
 struct _tlmdContext
 {
-  int           fifo;
+  int                out;
+  int                in;
+  char               path[260];
+  tlmdConnectionType type;
 };
 struct _tlmdMessage
 {
   tlmdByte*     buffer;
   tlmdSize      size;
+  tlmdSize      offs;
 };
 
 /***************************************
@@ -38,6 +42,8 @@ extern const char* g_tlmdErrors[];
     }
 
 tlmdReturn tlmdInitMessageInternal(tlmdMessage** message, tlmdMessageID sysid, tlmdMessageID id, tlmdSize sise);
+
+tlmdReturn tlmdOpen(char* path, int* fd);
 
 #define TLMD_AUTH 1
 

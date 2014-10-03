@@ -33,7 +33,7 @@ targetname "tlmd"
 project "tlmd-server"
 kind "ConsoleApp"
 files { "src/tlmd_server.c" }
-links { "tlmd" }
+links { "tlmd", "pthread" }
 targetname "tlmd"
 
 project "tests"

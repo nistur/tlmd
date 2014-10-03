@@ -1,6 +1,9 @@
 #include "tlmd-tests.h"
 #include "tlmd.h"
 
+#include <unistd.h>
+
+/*
 TEST(InitTerminate, Basic, 0.0f,
      // initialisation
      {
@@ -22,7 +25,7 @@ TEST(InitTerminate, Basic, 0.0f,
 	 tlmdContext* context;
      }
     );
-
+*/
 TEST(Authenticate, Basic, 0.0f,
      {
 	 m_data.context = 0;

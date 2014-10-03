@@ -32,9 +32,11 @@ typedef struct _tlmdConnectionProperties tlmdConnectionProperties;
 typedef void(*tlmdCallback)(tlmdMessage*);
 
 
-#define TLMD_SUCCESS    0
-#define TLMD_NO_CONTEXT 1
-#define TLMD_NO_MESSAGE 2
+#define TLMD_SUCCESS          0
+#define TLMD_NO_CONTEXT       1
+#define TLMD_NO_MESSAGE       2
+#define TLMD_NOT_IMPLEMENTED  3
+#define TLMD_IO_ERROR         4
 
 #define TLMD_CONNECTION_LOCAL  0
 #define TLMD_CONNECTION_REMOTE 1

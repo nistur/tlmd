@@ -11,4 +11,6 @@ typedef unsigned short     tlmd_u16;
 typedef unsigned int       tlmd_u32;
 typedef unsigned long long tlmd_u64;
 
+typedef void               tlmd_void;
+
 #endif/*__TLMD_TYPES_H__*/
