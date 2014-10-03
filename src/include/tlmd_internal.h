@@ -49,4 +49,8 @@ tlmdReturn tlmdOpen(char* path, int* fd);
 
 #include "tlmd_message_defs.h"
 
+// TLMD_UNUSED( x ) - macro for removing warnings/errors for known unused variables
+// should just be used for development, not release
+#define TLMD_UNUSED( x ) { void* __X__ = &x; while( __X__ ) __X__ = 0; }
+
 #endif/*__TLMD_INTERNAL_H__*/

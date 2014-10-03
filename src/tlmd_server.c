@@ -5,6 +5,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
 
 typedef struct
 {
@@ -21,6 +22,8 @@ threaddat* empty( threaddat* threads, int size );
 
 int main( int argc, char** argv )
 {
+  TLMD_UNUSED( argc );
+  TLMD_UNUSED( argv );
   threaddat threads[ MAX_THREAD ];
   int i;
   struct dirent* e;
@@ -37,7 +40,7 @@ int main( int argc, char** argv )
     DIR* dir = opendir( sockpath );
     if( !dir )
       continue;
-    while( e = readdir( dir ) )
+    while( ( e = readdir( dir ) ) )
     {
       if( strcmp( e->d_name, "." ) != 0 &&
 	  strcmp( e->d_name, ".." ) != 0 )
@@ -112,13 +115,13 @@ void* local_thread( void* dat )
       {
 	// check the out file
 	tlmdMessage* msg;
-	tlmdSize size;
+	
 	//	if( !read(f, &size, sizeof(size)) || size == 0 ) continue;
 	tlmdInitMessageInternal(&msg, 0, 0, 1024);
 	
 	if( read(f, msg->buffer, 1024) )
 	{
-	  char* data = msg->buffer + (sizeof(tlmdMessageID)*2);
+	  tlmdByte* data = msg->buffer + (sizeof(tlmdMessageID)*2);
 	 
 	  printf("MSG: %s", data);
 	}
@@ -132,4 +135,5 @@ void* local_thread( void* dat )
   }
 
   thread->pid = -1;
+  return 0;
 }

@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
 
 void mkdir_p(char* path)
 {
@@ -63,6 +64,7 @@ tlmdReturn tlmdTerminateContext(tlmdContext** context)
 
 tlmdReturn tlmdAuthenticate(tlmdContext* context, tlmdConnectionType connection, tlmdConnectionProperties* properties)
 {
+  TLMD_UNUSED( properties )
    if(context == 0)
 	   tlmdReturn(NO_CONTEXT);
 
@@ -76,7 +78,7 @@ tlmdReturn tlmdAuthenticate(tlmdContext* context, tlmdConnectionType connection,
      sprintf( context->path, "%s", path );
 
      tlmdMessage* authMsg;
-     tlmdAuthMessageData data;
+     //tlmdAuthMessageData data;
      static const char* auth = "Hello, World\n";
      tlmdInitMessageInternal(&authMsg, TLMD_AUTH, 0, strlen(auth)+1);
 
@@ -93,6 +95,7 @@ tlmdReturn tlmdAuthenticate(tlmdContext* context, tlmdConnectionType connection,
 
 tlmdReturn tlmdRegister(tlmdContext* context, tlmdMessageID message)
 {
+  TLMD_UNUSED( message );
    if(context == 0)
      tlmdReturn(NO_CONTEXT);
 
@@ -118,6 +121,7 @@ tlmdReturn tlmdSend(tlmdContext* context, tlmdMessage* message)
 
 tlmdReturn tlmdSetCallback(tlmdContext* context, tlmdCallback callback)
 {
+  TLMD_UNUSED( callback )
    if(context == 0)
 	   tlmdReturn(NO_CONTEXT);
 
