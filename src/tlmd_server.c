@@ -1,7 +1,8 @@
 #include "tlmd_internal.h"
 
+#include "pt/pt.h"
+
 #include <stdio.h>
-#include <pthread.h>
 #include <dirent.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -10,11 +11,11 @@
 typedef struct
 {
   int         pid;
-  pthread_t   thread;
+  struct pt   thread;
   char        path[260];
 } threaddat;
 
-void* local_thread( void* dat );
+static int local_thread( threaddat* dat );
 threaddat* dat( threaddat* threads, int size, int pid );
 threaddat* empty( threaddat* threads, int size );
 
@@ -59,13 +60,21 @@ int main( int argc, char** argv )
 	  {
 	    thread->pid = pid;
 	    sprintf( thread->path, "%s/%s", sockpath, e->d_name );
-
-	    pthread_create( &thread->thread, NULL, local_thread, thread );
+            
+            PT_INIT( &thread->thread );
 	  }
 	}
       }
     }
     closedir( dir );
+
+    for( i = 0; i < MAX_THREAD; ++i )
+    {
+        if( threads[ i ].pid != -1 )
+        {
+            local_thread( &threads[ i ] );
+        }
+    }
     
     sleep( 0 );
   }
@@ -95,45 +104,46 @@ threaddat* empty( threaddat* threads, int size )
   return NULL;
 }
 
-void* local_thread( void* dat )
+static int local_thread( threaddat* thread )
 {
-  threaddat* thread = (threaddat*)dat;
-
-  char outpath[260];
-  sprintf( outpath, "%s/out", thread->path );
-  
-  int f = open( outpath, O_RDONLY | O_NONBLOCK );
-  if( f )
-  {
-    while( 1 )
+    PT_BEGIN( &thread->thread );
+    
+    char outpath[260];
+    sprintf( outpath, "%s/out", thread->path );
+    
+    int f = open( outpath, O_RDONLY | O_NONBLOCK );
+    if( f )
     {
-      if( !opendir( thread->path ) )
-      {
-	break;
-      }
-      else
-      {
-	// check the out file
-	tlmdMessage* msg;
-	
-	//	if( !read(f, &size, sizeof(size)) || size == 0 ) continue;
-	tlmdInitMessageInternal(&msg, 0, 0, 1024);
-	
-	if( read(f, msg->buffer, 1024) )
-	{
-	  tlmdByte* data = msg->buffer + (sizeof(tlmdMessageID)*2);
-	 
-	  printf("MSG: %s", data);
-	}
-	tlmdFree(msg->buffer);
-	tlmdFree(msg);
-      }
-
-      sleep( 0 );
-      // if we have messages, write them to the in file
+        while( 1 )
+        {
+            if( !opendir( thread->path ) )
+            {
+                break;
+            }
+            else
+            {
+                // check the out file
+                tlmdMessage* msg;
+                
+                //	if( !read(f, &size, sizeof(size)) || size == 0 ) continue;
+                tlmdInitMessageInternal(&msg, 0, 0, 1024);
+                
+                if( read(f, msg->buffer, 1024) )
+                {
+                    tlmdByte* data = msg->buffer + (sizeof(tlmdMessageID)*2);
+                    
+                    printf("MSG: %s", data);
+                }
+                tlmdFree(msg->buffer);
+                tlmdFree(msg);
+            }
+            
+            PT_YIELD( &thread->thread);
+            sleep( 0 );
+            // if we have messages, write them to the in file
+        }
     }
-  }
-
-  thread->pid = -1;
-  return 0;
+    
+    thread->pid = -1;
+    PT_END( &thread->thread );
 }

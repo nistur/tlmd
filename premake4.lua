@@ -1,7 +1,7 @@
 solution "tlmd"
 language "C++"
 configurations { "Debug", "Release" }
-includedirs { "include", "src/include" }
+includedirs { "include", "src/include", "util" }
 files { "include/**.h" }
 
 defines { "TLMD_BUILD" }
@@ -33,7 +33,7 @@ targetname "tlmd"
 project "tlmd-server"
 kind "ConsoleApp"
 files { "src/tlmd_server.c" }
-links { "tlmd", "pthread" }
+links { "tlmd" }
 targetname "tlmd"
 
 project "tests"
